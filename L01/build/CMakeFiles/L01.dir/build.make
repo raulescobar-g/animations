@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/bin/cmake
+CMAKE_COMMAND = /usr/local/Cellar/cmake/3.22.1/bin/cmake
 
 # The command to remove a file.
-RM = /usr/bin/cmake -E rm -f
+RM = /usr/local/Cellar/cmake/3.22.1/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/raul3/Programming/animations/L01
+CMAKE_SOURCE_DIR = /Users/raulescobar/Documents/CSCE_450/l01
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/raul3/Programming/animations/L01/build
+CMAKE_BINARY_DIR = /Users/raulescobar/Documents/CSCE_450/l01/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/L01.dir/depend.make
@@ -72,58 +72,58 @@ include CMakeFiles/L01.dir/flags.make
 CMakeFiles/L01.dir/src/GLSL.cpp.o: CMakeFiles/L01.dir/flags.make
 CMakeFiles/L01.dir/src/GLSL.cpp.o: ../src/GLSL.cpp
 CMakeFiles/L01.dir/src/GLSL.cpp.o: CMakeFiles/L01.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/raul3/Programming/animations/L01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/L01.dir/src/GLSL.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/GLSL.cpp.o -MF CMakeFiles/L01.dir/src/GLSL.cpp.o.d -o CMakeFiles/L01.dir/src/GLSL.cpp.o -c /mnt/c/Users/raul3/Programming/animations/L01/src/GLSL.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/raulescobar/Documents/CSCE_450/l01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/L01.dir/src/GLSL.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/GLSL.cpp.o -MF CMakeFiles/L01.dir/src/GLSL.cpp.o.d -o CMakeFiles/L01.dir/src/GLSL.cpp.o -c /Users/raulescobar/Documents/CSCE_450/l01/src/GLSL.cpp
 
 CMakeFiles/L01.dir/src/GLSL.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/L01.dir/src/GLSL.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/raul3/Programming/animations/L01/src/GLSL.cpp > CMakeFiles/L01.dir/src/GLSL.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/raulescobar/Documents/CSCE_450/l01/src/GLSL.cpp > CMakeFiles/L01.dir/src/GLSL.cpp.i
 
 CMakeFiles/L01.dir/src/GLSL.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/L01.dir/src/GLSL.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/raul3/Programming/animations/L01/src/GLSL.cpp -o CMakeFiles/L01.dir/src/GLSL.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/raulescobar/Documents/CSCE_450/l01/src/GLSL.cpp -o CMakeFiles/L01.dir/src/GLSL.cpp.s
 
 CMakeFiles/L01.dir/src/MatrixStack.cpp.o: CMakeFiles/L01.dir/flags.make
 CMakeFiles/L01.dir/src/MatrixStack.cpp.o: ../src/MatrixStack.cpp
 CMakeFiles/L01.dir/src/MatrixStack.cpp.o: CMakeFiles/L01.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/raul3/Programming/animations/L01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/L01.dir/src/MatrixStack.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/MatrixStack.cpp.o -MF CMakeFiles/L01.dir/src/MatrixStack.cpp.o.d -o CMakeFiles/L01.dir/src/MatrixStack.cpp.o -c /mnt/c/Users/raul3/Programming/animations/L01/src/MatrixStack.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/raulescobar/Documents/CSCE_450/l01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/L01.dir/src/MatrixStack.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/MatrixStack.cpp.o -MF CMakeFiles/L01.dir/src/MatrixStack.cpp.o.d -o CMakeFiles/L01.dir/src/MatrixStack.cpp.o -c /Users/raulescobar/Documents/CSCE_450/l01/src/MatrixStack.cpp
 
 CMakeFiles/L01.dir/src/MatrixStack.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/L01.dir/src/MatrixStack.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/raul3/Programming/animations/L01/src/MatrixStack.cpp > CMakeFiles/L01.dir/src/MatrixStack.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/raulescobar/Documents/CSCE_450/l01/src/MatrixStack.cpp > CMakeFiles/L01.dir/src/MatrixStack.cpp.i
 
 CMakeFiles/L01.dir/src/MatrixStack.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/L01.dir/src/MatrixStack.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/raul3/Programming/animations/L01/src/MatrixStack.cpp -o CMakeFiles/L01.dir/src/MatrixStack.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/raulescobar/Documents/CSCE_450/l01/src/MatrixStack.cpp -o CMakeFiles/L01.dir/src/MatrixStack.cpp.s
 
 CMakeFiles/L01.dir/src/Program.cpp.o: CMakeFiles/L01.dir/flags.make
 CMakeFiles/L01.dir/src/Program.cpp.o: ../src/Program.cpp
 CMakeFiles/L01.dir/src/Program.cpp.o: CMakeFiles/L01.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/raul3/Programming/animations/L01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/L01.dir/src/Program.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/Program.cpp.o -MF CMakeFiles/L01.dir/src/Program.cpp.o.d -o CMakeFiles/L01.dir/src/Program.cpp.o -c /mnt/c/Users/raul3/Programming/animations/L01/src/Program.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/raulescobar/Documents/CSCE_450/l01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/L01.dir/src/Program.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/Program.cpp.o -MF CMakeFiles/L01.dir/src/Program.cpp.o.d -o CMakeFiles/L01.dir/src/Program.cpp.o -c /Users/raulescobar/Documents/CSCE_450/l01/src/Program.cpp
 
 CMakeFiles/L01.dir/src/Program.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/L01.dir/src/Program.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/raul3/Programming/animations/L01/src/Program.cpp > CMakeFiles/L01.dir/src/Program.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/raulescobar/Documents/CSCE_450/l01/src/Program.cpp > CMakeFiles/L01.dir/src/Program.cpp.i
 
 CMakeFiles/L01.dir/src/Program.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/L01.dir/src/Program.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/raul3/Programming/animations/L01/src/Program.cpp -o CMakeFiles/L01.dir/src/Program.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/raulescobar/Documents/CSCE_450/l01/src/Program.cpp -o CMakeFiles/L01.dir/src/Program.cpp.s
 
 CMakeFiles/L01.dir/src/main.cpp.o: CMakeFiles/L01.dir/flags.make
 CMakeFiles/L01.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/L01.dir/src/main.cpp.o: CMakeFiles/L01.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/raul3/Programming/animations/L01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/L01.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/main.cpp.o -MF CMakeFiles/L01.dir/src/main.cpp.o.d -o CMakeFiles/L01.dir/src/main.cpp.o -c /mnt/c/Users/raul3/Programming/animations/L01/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/raulescobar/Documents/CSCE_450/l01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/L01.dir/src/main.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/L01.dir/src/main.cpp.o -MF CMakeFiles/L01.dir/src/main.cpp.o.d -o CMakeFiles/L01.dir/src/main.cpp.o -c /Users/raulescobar/Documents/CSCE_450/l01/src/main.cpp
 
 CMakeFiles/L01.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/L01.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/raul3/Programming/animations/L01/src/main.cpp > CMakeFiles/L01.dir/src/main.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/raulescobar/Documents/CSCE_450/l01/src/main.cpp > CMakeFiles/L01.dir/src/main.cpp.i
 
 CMakeFiles/L01.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/L01.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/raul3/Programming/animations/L01/src/main.cpp -o CMakeFiles/L01.dir/src/main.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/raulescobar/Documents/CSCE_450/l01/src/main.cpp -o CMakeFiles/L01.dir/src/main.cpp.s
 
 # Object files for target L01
 L01_OBJECTS = \
@@ -140,13 +140,10 @@ L01: CMakeFiles/L01.dir/src/MatrixStack.cpp.o
 L01: CMakeFiles/L01.dir/src/Program.cpp.o
 L01: CMakeFiles/L01.dir/src/main.cpp.o
 L01: CMakeFiles/L01.dir/build.make
-L01: /mnt/c/Users/raul3/Programming/glfw-3.3.8/debug/src/libglfw3.a
-L01: /mnt/c/Users/raul3/Programming/glew-2.1.0/lib/libGLEW.a
-L01: /usr/lib/x86_64-linux-gnu/librt.a
-L01: /usr/lib/x86_64-linux-gnu/libm.so
-L01: /usr/lib/x86_64-linux-gnu/libX11.so
+L01: /Users/raulescobar/Documents/glfw-3.3.6/debug/src/libglfw3.a
+L01: /Users/raulescobar/Documents/glew-2.2.0/lib/libGLEW.a
 L01: CMakeFiles/L01.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/c/Users/raul3/Programming/animations/L01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable L01"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/raulescobar/Documents/CSCE_450/l01/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable L01"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/L01.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -158,6 +155,6 @@ CMakeFiles/L01.dir/clean:
 .PHONY : CMakeFiles/L01.dir/clean
 
 CMakeFiles/L01.dir/depend:
-	cd /mnt/c/Users/raul3/Programming/animations/L01/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/raul3/Programming/animations/L01 /mnt/c/Users/raul3/Programming/animations/L01 /mnt/c/Users/raul3/Programming/animations/L01/build /mnt/c/Users/raul3/Programming/animations/L01/build /mnt/c/Users/raul3/Programming/animations/L01/build/CMakeFiles/L01.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/raulescobar/Documents/CSCE_450/l01/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/raulescobar/Documents/CSCE_450/l01 /Users/raulescobar/Documents/CSCE_450/l01 /Users/raulescobar/Documents/CSCE_450/l01/build /Users/raulescobar/Documents/CSCE_450/l01/build /Users/raulescobar/Documents/CSCE_450/l01/build/CMakeFiles/L01.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/L01.dir/depend
 

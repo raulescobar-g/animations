@@ -199,7 +199,63 @@ void render()
 		glEnd();
 	}
 
-	// INSERT CODE HERE
+	if (cps.size() >= 4) {
+		glBegin(GL_LINE_STRIP);
+		// INSERT CODE HERE
+		if (cps.size() == 4) {
+			glm::mat4 B;
+			B[0] = glm::vec4(1.0f,0.0f,0.0f,0.0f);
+			B[1] = glm::vec4(-3.0f,3.0f,0.0f,0.0f);
+			B[2] = glm::vec4(3.0f,-6.0f,3.0f,0.0f);
+			B[3] = glm::vec4(-1.0f,3.0f,-3.0f,1.0f);
+			
+			// Fill in G column by column
+			glm::mat4 G;
+			G[0] = glm::vec4(cps[0], 0.0f);
+			G[1] = glm::vec4(cps[1], 0.0f);
+			G[2] = glm::vec4(cps[2], 0.0f);
+			G[3] = glm::vec4(cps[3], 0.0f);
+			
+			
+			for(int u_i = 0; u_i < 101; ++u_i) {
+				
+				float u = u_i / 100.0f;
+				glm::vec4 uVec(1.0f, u, u*u, u*u*u);
+				// Compute position at u
+				glm::vec4 p = G*(B*uVec);
+				glVertex3f(p.x, p.y, p.z);
+			}
+			
+		} else {
+
+			glm::mat4 B;
+			B[0] = glm::vec4(1.0f,0.0f,0.0f,0.0f);
+			B[1] = glm::vec4(-3.0f,3.0f,0.0f,0.0f);
+			B[2] = glm::vec4(3.0f,-6.0f,3.0f,0.0f);
+			B[3] = glm::vec4(-1.0f,3.0f,-3.0f,1.0f);
+			
+			for (int i = -1; i < cps.size() - 2; ++i) {
+				// Fill in G column by column
+				glm::mat4 G;
+				G[0] = glm::vec4(cps[max(0,i)], 0.0f);
+				G[1] = glm::vec4(cps[i + 1], 0.0f);
+				G[2] = glm::vec4(cps[i + 2], 0.0f);
+				G[3] = glm::vec4(cps[min(i + 3, (int)cps.size()-1)], 0.0f);
+				
+				
+				for(int u_i = 0; u_i < 101; ++u_i) {
+					
+					float u = u_i / 100.0f;
+					glm::vec4 uVec(1.0f, u, u*u, u*u*u);
+					// Compute position at u
+					glm::vec4 p = G*(B*uVec);
+					glVertex3f(p.x, p.y, p.z);
+				}
+			}
+
+		}
+		glEnd();
+	}
 
 	// Unbind the program
 	prog->unbind();
