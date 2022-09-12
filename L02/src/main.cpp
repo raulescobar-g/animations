@@ -183,6 +183,7 @@ void render()
 	// The center of the bunny is at (-0.2802, 0.932, 0.0851)
 	glm::vec3 center(-0.2802, 0.932, 0.0851);
 	
+	
 	// Alpha is the linear interpolation parameter between 0 and 1
 	float alpha = std::fmod(0.5f*t, 1.0f);
 	
@@ -208,6 +209,9 @@ void render()
 		axis1 = glm::normalize(axis1);
 		q1 = glm::angleAxis((float)(90.0f/180.0f*M_PI), axis1);
 	}
+
+	glm::mat4 R1 = glm::mat4_cast(q1);
+	glm::mat4 R0 = glm::mat4_cast(q0);
 	
 	glm::vec3 p0(-1.0f, 0.0f, 0.0f);
 	glm::vec3 p1( 1.0f, 0.0f, 0.0f);
@@ -218,19 +222,30 @@ void render()
 
 	// LEFT
 	MV->pushMatrix();
-	glUniformMatrix4fv(progNormal->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+		MV->translate(p0);
+		MV->multMatrix(R0);
+		MV->translate(-center);
+		glUniformMatrix4fv(progNormal->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 	MV->popMatrix();
 	bunny->draw(progNormal);
 	
 	// RIGHT
 	MV->pushMatrix();
-	glUniformMatrix4fv(progNormal->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+		MV->translate(p1);
+		MV->multMatrix(R1);
+		MV->translate(-center);
+		glUniformMatrix4fv(progNormal->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 	MV->popMatrix();
 	bunny->draw(progNormal);
 	
+	glm::mat4 R2 = glm::mat4_cast(glm::normalize((1.0f - alpha)*q0 + alpha*q1));
+
 	// INTERPOLATED
 	MV->pushMatrix();
-	glUniformMatrix4fv(progNormal->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+		MV->translate(glm::vec3((1-alpha) * p0 + alpha * p1));
+		MV->multMatrix(R2);
+		MV->translate(-center);
+		glUniformMatrix4fv(progNormal->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 	MV->popMatrix();
 	bunny->draw(progNormal);
 	
