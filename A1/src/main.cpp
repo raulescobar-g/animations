@@ -32,8 +32,10 @@ shared_ptr<Shape> prop2;
 
 double t, dt;
 
-glm::mat4 B, G;
-float c;
+glm::mat4 B, G, R;
+float c, tmax, smax, ds;
+
+vector<pair<float,float> > table;
 
 
 struct Object { 
@@ -50,8 +52,14 @@ struct Helicopter {
 	Helicopter() {};
 };
 
+struct Keyframe {
+	Keyframe(glm::vec3 pos, glm::quat quat): pos(pos), quat(quat) {};
+	glm::vec3 pos;
+	glm::quat quat;
+};
+
 vector<Object> objects;
-vector<glm::vec3> keyframes;
+vector<Keyframe> keyframes;
 
 static void error_callback(int error, const char *description)
 {
@@ -96,6 +104,41 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 int mod(int a, int b) {
 	return a < 0 ? mod(a+b, b) : a%b;
+}
+
+void fillTable() {
+
+	int total = keyframes.size();
+	float u1;
+	float u = 0.0f;
+	float s = 0.0f;
+	table.push_back(make_pair(u, s));
+
+	for (int i = 0; i < total; ++i){
+		u = 0.0f;
+		for (int j = 0; j < (int) 1.0f/ds; ++j) {
+			u1 = u + ds;
+
+			//cout<<u1<<endl;
+			//cout<< mod(i-1, total) << ", "<< mod(i, total)<< ", "<< mod(i+1, total) <<", "<< mod(i+2, total) <<endl;
+			G[0] = glm::vec4(keyframes[mod(i-1, total)].pos, 0.0f);
+			G[1] = glm::vec4(keyframes[mod(i, total)].pos, 0.0f);
+			G[2] = glm::vec4(keyframes[mod(i+1, total)].pos, 0.0f);
+			G[3] = glm::vec4(keyframes[mod(i+2, total)].pos, 0.0f);
+
+			glm::vec3 pA = c * G * B * glm::vec4(1.0f, u, u*u, u*u*u);
+			glm::vec3 pB = c * G * B * glm::vec4(1.0f, u1, u1*u1, u1*u1*u1);
+
+			s += glm::length(pB - pA);
+
+			table.push_back(make_pair(i + u1, s));
+			u += ds;
+		}
+	}
+	// for (auto e: table) {
+	// 	cout<<e.first<<" , "<<e.second<<endl;
+	// }
+	//exit(0);
 }
 
 static void init()
@@ -152,18 +195,22 @@ static void init()
 	prop2->init();
 	objects.push_back(Object(prop2, glm::vec3(0.0f, 0.0f, 0.0f),glm::angleAxis(0.0001f, glm::vec3(0.6228f, 0.1179f, 0.1365f)), 1.0f, true));
 	
-	keyframes.push_back(glm::vec3(-1.0f, 0.0f, 1.0f));
-	keyframes.push_back(glm::vec3(0.0f, 3.0f, -1.0f));
-	keyframes.push_back(glm::vec3(7.0f, 0.0f, 2.0f));
-	keyframes.push_back(glm::vec3(0.0f, -2.0f, -2.0f));
-	keyframes.push_back(glm::vec3(-8.0f, -8.0f, 0.0f));
+	float pi = glm::pi<float>();
+	keyframes.push_back(Keyframe(glm::vec3(-1.0f, 0.0f, 1.0f), glm::angleAxis(pi/3.0f, glm::vec3(1.0f, 0.0f, 0.0f))));
+	keyframes.push_back(Keyframe(glm::vec3(0.0f, 3.0f, -1.0f), glm::angleAxis(pi/2.0f, glm::vec3(1.0f, 0.0f, 0.0f))));
+	keyframes.push_back(Keyframe(glm::vec3(7.0f, 0.0f, 2.0f), glm::angleAxis(2.0f * pi / 3.0f, glm::vec3(1.0f, 0.0f, 0.0f))));
+	keyframes.push_back(Keyframe(glm::vec3(0.0f, -2.0f, -2.0f), glm::angleAxis(pi, glm::vec3(1.0f, 0.0f, 0.0f))));
+	keyframes.push_back(Keyframe(glm::vec3(-20.0f, -20.0f, 0.0f), glm::angleAxis(3.0f * pi / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f))));
 
+	tmax = 25.0f;
+	ds = 0.1f;
+	
+	fillTable();
+	smax = table[table.size()-1].second;
 	// Initialize time.
 	glfwSetTime(0.0);
 	t = 0.0;
-	// If there were any OpenGL errors, this will print something.
-	// You can intersperse this line in your code to find the exact location
-	// of your OpenGL error.
+
 	GLSL::checkError(GET_FILE_LINE);
 }
 
@@ -175,6 +222,56 @@ void update() {
 			//object.rotation *= glm::angleAxis((float) 0.01f, glm::axis(object.rotation));
 		}
 	}
+}
+
+glm::vec4 toVec4(glm::quat q) {
+	return glm::vec4(q.x, q.y, q.z, q.w);
+}
+
+std::vector<glm::quat> getQuats(float u) {
+	int size = keyframes.size();
+	glm::quat q0 = keyframes[mod((int) u - 1, size)].quat;
+	glm::quat q1 = keyframes[mod((int) u , size)].quat;
+	glm::quat q2 = keyframes[mod((int) u + 1, size)].quat;
+	glm::quat q3 = keyframes[mod((int) u + 2, size)].quat;
+	if (glm::dot(q0, q1) < 0.0f){
+		q1.x = -q1.x;
+		q1.y = -q1.y;
+		q1.z = -q1.z;
+		q1.w = -q1.w;
+	}
+	if (glm::dot(q1, q2) < 0.0f) {
+		q2.x = -q2.x;
+		q2.y = -q2.y;
+		q2.z = -q2.z;
+		q2.w = -q2.w;
+	}
+	if (glm::dot(q2, q3) < 0.0f) {
+		q3.x = -q3.x;
+		q3.y = -q3.y;
+		q3.z = -q3.z;
+		q3.w = -q3.w;
+	}
+	std::vector res = { q0, q1, q2, q3 };
+	return res;
+}
+
+float stou(float s) {
+	float u0, u1;
+	float alpha;
+	
+	for (int i = 0; i < table.size(); ++i) {
+		
+		if (s > table[i].second && s < table[i+1].second) {
+			
+			u0 = table[i].first;
+			u1 = table[i+1].first;
+			alpha = (s - table[i].second) / (table[i+1].second - table[i].second);
+			break;
+		}
+	}
+	//cout<<alpha<<", "<<s0<<", "<<s1<<endl;
+	return (1-alpha) * u0 + alpha * u1;
 }
 
 void render()
@@ -214,34 +311,84 @@ void render()
 	MV->pushMatrix();
 	camera->applyViewMatrix(MV);
 
-	float u = std::fmod(t, (float)keyframes.size());
-
 	int size = (int)keyframes.size();
-	G[0] = glm::vec4(keyframes[mod((int)u - 1, size)], 0.0f);
-	G[1] = glm::vec4(keyframes[mod((int)u , size)], 0.0f);
-	G[2] = glm::vec4(keyframes[mod((int)u + 1, size)], 0.0f);
-	G[3] = glm::vec4(keyframes[mod((int)u + 2, size)], 0.0f);
-	
+	float tNorm = std::fmod(t, tmax) / tmax;
+	float sNorm = tNorm;
+	float s = sNorm * smax;
+
+	float u;
+	if (keyPresses[(unsigned) 's']%2 == 0){
+		u = stou(s);
+	} else if (keyPresses[(unsigned) 's']%2 == 1) {
+		u = s;
+	} else {
+		u = stou(-2 * tNorm * tNorm * tNorm + 3 * tNorm * tNorm);
+	}
+
 	float k = u - std::floor(u);
+
+	std::vector<glm::quat> qS = getQuats(u);
+	
+	G[0] = glm::vec4(keyframes[mod((int) u - 1, size)].pos, 0.0f);
+	G[1] = glm::vec4(keyframes[mod((int) u , size)].pos, 0.0f);
+	G[2] = glm::vec4(keyframes[mod((int) u + 1, size)].pos, 0.0f);
+	G[3] = glm::vec4(keyframes[mod((int) u + 2, size)].pos, 0.0f);
+	
 	glm::vec4 uVec(1.0f, k, k*k, k*k*k);
 	// Compute position at u
-	glm::vec4 offset = c * G*(B*uVec);
-	
+	glm::vec4 offset = c * G*(B*uVec);	
+
+	G[0] = glm::vec4(toVec4(qS[0]));
+	G[1] = glm::vec4(toVec4(qS[1]));
+	G[2] = glm::vec4(toVec4(qS[2]));
+	G[3] = glm::vec4(toVec4(qS[3]));
+
+	glm::vec4 qVec = c * G *(B*uVec);	
+
+	glm::quat q(qVec[3], qVec[0], qVec[1], qVec[2]); 
+	R = glm::mat4_cast(glm::normalize(q)); 
+	R[3] = glm::vec4(glm::vec3(offset), 1.0f);
 
 	for (const Object& object : objects) {
 		MV->pushMatrix();
 			
-			MV->translate(object.position + glm::vec3(offset));
+			//MV->translate(object.position + glm::vec3(offset));
 			MV->scale(object.scale, object.scale, object.scale);
-			MV->multMatrix(glm::mat4_cast(object.rotation));
+			MV->multMatrix(R);
 			prog->bind();
 			glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 			glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 			glUniform3f(prog->getUniform("kd"), 1.0f, 0.0f, 0.0f);
 			object.shape->draw(prog);
 			prog->unbind();
+
 		MV->popMatrix();
 	}
+
+	if (keyPresses[(unsigned) 'k'] % 2) {
+		for (const Keyframe& kf: keyframes) {
+			R = glm::mat4_cast(glm::normalize(kf.quat)); 
+			R[3] = glm::vec4(kf.pos, 1.0f);
+
+			for (const Object& object : objects) {
+				MV->pushMatrix();
+					
+					//MV->translate(object.position + glm::vec3(offset));
+					MV->scale(object.scale, object.scale, object.scale);
+					MV->multMatrix(R);
+					prog->bind();
+					glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
+					glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+					glUniform3f(prog->getUniform("kd"), 1.0f, 0.0f, 0.0f);
+					object.shape->draw(prog);
+					prog->unbind();
+
+				MV->popMatrix();
+			}
+		}
+	}
+
+	
 	
 	// Draw the frame and the grid with OpenGL 1.x (no GLSL)
 	
@@ -269,16 +416,51 @@ void render()
 	glVertex3f(0, 0, 1);
 	glEnd();
 
+	
+		
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glPointSize(10.0f);
+	glBegin(GL_POINTS);
+	float _ds = 0.2f;
+	for(float _s = 0.0f; _s < smax; _s += _ds) {
+		// Convert from s to (concatenated) u
+		
+		float uu = keyPresses[(unsigned) 's']%2==0 ? stou(_s) : _s;
+		if (keyPresses[(unsigned) 's']%2 == 0){
+			uu = stou(_s);
+		} else if (keyPresses[(unsigned) 's']%2 == 1) {
+			uu = _s;
+		} else {
+			uu = stou(-2 * _s * _s * _s + 3 * _s * _s);
+		}
+		// Convert from concatenated u to the usual u between 0 and 1.
+		float kfloat;
+		float _u = std::modf(uu, &kfloat);
+		// k is the index of the starting control point
+		int k = (int)std::floor(kfloat);
+		// Compute spline point at u
+		glm::mat4 Gk;
+		for(int i = 0; i < 4; ++i) {
+			Gk[i] = glm::vec4(keyframes[mod(k+i, keyframes.size())].pos, 0.0f);
+		}
+		glm::vec4 uVec(1.0f, _u, _u*_u, _u*_u*_u);
+		glm::vec3 P(c * Gk * (B * uVec));
+		glVertex3fv(&P[0]);
+	}
+	glEnd();
+	
+
 	glBegin(GL_LINE_STRIP);
+	
 	if(keyPresses[(unsigned)'k'] % 2) {
 		glColor3f(0, 1, 0);
 		for (int j = -1; j < ((int)keyframes.size()) - 1; ++j) {
 			
 			int size = (int)keyframes.size();
-			G[0] = glm::vec4(keyframes[mod(j, size)], 0.0f);
-			G[1] = glm::vec4(keyframes[mod(j+1, size)], 0.0f);
-			G[2] = glm::vec4(keyframes[mod(j+2, size)], 0.0f);
-			G[3] = glm::vec4(keyframes[mod(j+3, size)], 0.0f);
+			G[0] = glm::vec4(keyframes[mod(j, size)].pos, 0.0f);
+			G[1] = glm::vec4(keyframes[mod(j+1, size)].pos, 0.0f);
+			G[2] = glm::vec4(keyframes[mod(j+2, size)].pos, 0.0f);
+			G[3] = glm::vec4(keyframes[mod(j+3, size)].pos, 0.0f);
 			
 			
 			for(int u_i = 0; u_i < 11; ++u_i) {
