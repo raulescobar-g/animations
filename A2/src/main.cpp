@@ -12,6 +12,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GLSL.h"
 #include "Program.h"
@@ -20,7 +21,7 @@
 #include "ShapeSkin.h"
 #include "Texture.h"
 #include "TextureMatrix.h"
-
+#include "AnimationData.h"
 using namespace std;
 
 // Stores information in data/input.txt
@@ -33,6 +34,7 @@ public:
 };
 
 DataInput dataInput;
+AnimationData animation;
 
 GLFWwindow *window; // Main application window
 string RESOURCE_DIR = ""; // Where the shaders are loaded from
@@ -139,6 +141,8 @@ void init()
 	progSkin->addAttribute("aPos");
 	progSkin->addAttribute("aNor");
 	progSkin->addAttribute("aTex");
+	// progSkin->addAttribute("aIdx");
+	// progSkin->addAttribute("aWei");
 	progSkin->addUniform("P");
 	progSkin->addUniform("MV");
 	progSkin->addUniform("ka");
@@ -232,18 +236,46 @@ void render()
 		glVertex3f( gridSizeHalf, 0, z);
 	}
 	glEnd();
-	progSimple->unbind();
+	progSimple->unbind();	
 	
 	// Draw character
 	double fps = 30;
-	int frameCount = 1; // TODO: This number needs to be modified
+	int frameCount = animation.frames; 
 	int frame = ((int)floor(t*fps)) % frameCount;
+
+	if (keyToggles[(unsigned) 'a']) {
+		progSimple->bind();
+		glLineWidth(2);
+		int start = frame * animation.bones;
+		for (int i = start; i < start + animation.bones; ++i) {
+			MV->pushMatrix();
+			MV->multMatrix(animation.transforms[i]);
+			MV->scale(3.0f, 3.0f, 3.0f);
+			//std::cout << glm::to_string(T) << std::endl;
+			glUniformMatrix4fv(progSimple->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
+			glUniformMatrix4fv(progSimple->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+			glBegin(GL_LINES);
+			glColor3f(1, 0, 0);
+			glVertex3f(0, 0, 0);
+			glVertex3f(1, 0, 0);
+			glColor3f(0, 1, 0);
+			glVertex3f(0, 0, 0);
+			glVertex3f(0, 1, 0);
+			glColor3f(0, 0, 1);
+			glVertex3f(0, 0, 0);
+			glVertex3f(0, 0, 1);
+			glEnd();
+			MV->popMatrix();
+		}
+		progSimple->unbind();	
+		GLSL::checkError(GET_FILE_LINE);
+	}
+
+	
 	for(const auto &shape : shapes) {
 		MV->pushMatrix();
 		
-		// Draw bone
-		// TODO: implement
-		
+
 		// Draw skin
 		progSkin->bind();
 		textureMap[shape->getTextureFilename()]->bind(progSkin->getUniform("kdTex"));
@@ -254,7 +286,7 @@ void render()
 		glUniform3f(progSkin->getUniform("ks"), 0.1f, 0.1f, 0.1f);
 		glUniform1f(progSkin->getUniform("s"), 200.0f);
 		shape->setProgram(progSkin);
-		shape->update(frame);
+		shape->update(frame, animation);
 		shape->draw(frame);
 		progSkin->unbind();
 		
@@ -325,9 +357,11 @@ int main(int argc, char **argv)
 		cout << "Usage: A2 <SHADER DIR> <DATA DIR>" << endl;
 		return 0;
 	}
+	
 	RESOURCE_DIR = argv[1] + string("/");
 	DATA_DIR = argv[2] + string("/");
 	loadDataInputFile();
+	animation = AnimationData(DATA_DIR + "bigvegas_SambaDancing_skel.txt");
 	
 	// Set error callback.
 	glfwSetErrorCallback(error_callback);
@@ -336,7 +370,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	// Create a windowed mode window and its OpenGL context.
-	window = glfwCreateWindow(640, 480, "YOUR NAME", NULL, NULL);
+	window = glfwCreateWindow(640, 480, "Raul Escobar", NULL, NULL);
 	if(!window) {
 		glfwTerminate();
 		return -1;

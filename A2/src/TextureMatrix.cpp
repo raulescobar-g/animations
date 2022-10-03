@@ -41,10 +41,24 @@ void TextureMatrix::update(unsigned int key)
 	if(type == Type::BODY) {
 		// Do nothing
 	} else if(type == Type::MOUTH) {
-		// TODO
+		if (key == 'm'){
+			T[2][0] += 0.1f;
+			if (T[2][0] > 0.3f-0.01f){
+				T[2][0] = 0.0f;
+			}
+		} else if (key == 'M'){
+			T[2][1] -= 0.1f;
+		}
 	} else if(type == Type::EYES) {
-		// TODO
+		if (key == 'e'){
+			T[2][0] += 0.2f;
+			if (T[2][0] > 0.6f-0.01f){
+				T[2][0] = 0.0f;
+			}
+		} else if (key == 'E'){
+			T[2][1] -= 0.1f;
+		}
 	} else if(type == Type::BROWS) {
-		// TODO
+		if (key=='b') T[2][1] -= 0.1f;
 	}
 }

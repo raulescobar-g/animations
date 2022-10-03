@@ -12,6 +12,7 @@
 #include "GLSL.h"
 #include "Program.h"
 #include "TextureMatrix.h"
+//#include "utils.h"
 
 using namespace std;
 using namespace glm;
@@ -76,7 +77,63 @@ void ShapeSkin::loadMesh(const string &meshName)
 
 void ShapeSkin::loadAttachment(const std::string &filename)
 {
-	// TODO
+	
+	std::ifstream in;
+	in.open(filename);
+	if(!in.good()) {
+		std::cout << "Cannot read: " << filename << std::endl;
+	}
+	std::cout << "Loading: " << filename << std::endl;
+	
+	std::string line;
+
+	for (int i = 0; i < 5; ++i) std::getline(in, line); //comments
+
+    
+
+	std::stringstream ss(line);
+	std::string vertices_s, bones_s, max_influences_s;
+	ss >> vertices_s;
+	ss >> bones_s;
+	ss >> max_influences_s;
+
+	max_influences = std::stoi(max_influences_s);
+	int vertices = std::stoi(vertices_s);
+
+	idxBuf.resize(vertices);
+	weiBuf.resize(vertices);
+	
+	std::string influence_buf, idx_buf, weight_buf;
+	for (int i = 0; i < vertices; ++i) {
+		idxBuf.push_back(std::vector<int>());
+		weiBuf.push_back(std::vector<float>());
+
+        std::getline(in, line);
+        std::stringstream ss(line);
+
+		ss >> influence_buf;
+		int influence_count = std::stoi(influence_buf);
+
+		int idx;
+		float weight;
+
+        for (int j = 0; j < influence_count; ++j) {            
+            
+            ss >> idx_buf;
+            ss >> weight_buf;
+
+			idx = std::stoi(idx_buf);
+			weight = std::stof(weight_buf);
+
+            idxBuf[i].push_back(idx);
+			weiBuf[i].push_back(weight);
+        }
+		for (int k = 0; k < max_influences - influence_count; ++k){
+			idxBuf[i].push_back(0);
+			weiBuf[i].push_back(0.0f);
+		}
+	}
+	in.close();
 }
 
 void ShapeSkin::init()
@@ -84,12 +141,12 @@ void ShapeSkin::init()
 	// Send the position array to the GPU
 	glGenBuffers(1, &posBufID);
 	glBindBuffer(GL_ARRAY_BUFFER, posBufID);
-	glBufferData(GL_ARRAY_BUFFER, posBuf.size()*sizeof(float), &posBuf[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, posBuf.size()*sizeof(float), &posBuf[0], GL_DYNAMIC_DRAW);
 	
 	// Send the normal array to the GPU
 	glGenBuffers(1, &norBufID);
 	glBindBuffer(GL_ARRAY_BUFFER, norBufID);
-	glBufferData(GL_ARRAY_BUFFER, norBuf.size()*sizeof(float), &norBuf[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, norBuf.size()*sizeof(float), &norBuf[0], GL_DYNAMIC_DRAW);
 	
 	// Send the texcoord array to the GPU
 	glGenBuffers(1, &texBufID);
@@ -100,7 +157,7 @@ void ShapeSkin::init()
 	glGenBuffers(1, &elemBufID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elemBufID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elemBuf.size()*sizeof(unsigned int), &elemBuf[0], GL_STATIC_DRAW);
-	
+
 	// Unbind the arrays
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -108,12 +165,17 @@ void ShapeSkin::init()
 	GLSL::checkError(GET_FILE_LINE);
 }
 
-void ShapeSkin::update(int k)
+void ShapeSkin::update(int k, AnimationData& data)
 {
-	// TODO: CPU skinning calculations.
-	// After computing the new positions and normals, send the new data
-	// to the GPU by copying and pasting the relevant code from the
-	// init() function.
+
+	std::vector<float> newPosBuf = calculate_position(k, data);
+	std::vector<float> newNormBuf = calculate_normal(k, data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, posBufID);
+	glBufferData(GL_ARRAY_BUFFER, posBuf.size()*sizeof(float), &newPosBuf[0], GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, norBufID);
+	glBufferData(GL_ARRAY_BUFFER, norBuf.size()*sizeof(float), &newNormBuf[0], GL_DYNAMIC_DRAW);
 	
 	GLSL::checkError(GET_FILE_LINE);
 }
@@ -150,4 +212,46 @@ void ShapeSkin::draw(int k) const
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	GLSL::checkError(GET_FILE_LINE);
+}
+
+
+
+std::vector<float> ShapeSkin::calculate_position(int frame, AnimationData& data) {
+	std::vector<float> newPosBuf;
+
+	for (int i = 0; i < posBuf.size()/3; ++i) {
+		glm::vec4 x0(posBuf[i*3], posBuf[i*3+1], posBuf[i*3+2], 1.0f);
+		glm::vec4 p(0.0f, 0.0f, 0.0f, 0.0f);
+		for (int j = 0; j < max_influences; ++j) {
+			if (weiBuf[i][j] == 0.0f && idxBuf[i][j] == 0) break;
+			p += weiBuf[i][j] * data.transforms[frame*data.bones + idxBuf[i][j]]  * glm::inverse(data.transforms[idxBuf[i][j]])  * x0;
+			
+		}
+		newPosBuf.push_back(p.x);
+		newPosBuf.push_back(p.y);
+		newPosBuf.push_back(p.z);
+	}
+	return newPosBuf;
+	
+}
+
+
+std::vector<float> ShapeSkin::calculate_normal(int frame, AnimationData& data) {
+	std::vector<float> newNormBuf;
+
+	for (int i = 0; i < norBuf.size()/3; ++i) {
+		glm::vec4 x0(norBuf[i*3], norBuf[i*3+1], norBuf[i*3+2], 0.0f);
+		glm::vec4 p(0.0f, 0.0f, 0.0f, 0.0f);
+		for (int j = 0; j < max_influences; ++j) {
+			if (weiBuf[i][j] == 0.0f && idxBuf[i][j] == 0) break;
+			p += weiBuf[i][j] * data.transforms[frame*data.bones + idxBuf[i][j]]  * glm::inverse(data.transforms[idxBuf[i][j]])  * x0;
+			
+		}
+		//std::cout<<i<<std::endl;
+		newNormBuf.push_back(p.x);
+		newNormBuf.push_back(p.y);
+		newNormBuf.push_back(p.z);
+	}
+	return newNormBuf;
+	
 }
