@@ -1,0 +1,29 @@
+# Each line starts with a keyword:
+# - TEXTURE <texture file>
+# - MESH <obj file> <texture file>
+TEXTURE Eyes_Diff.jpg
+TEXTURE Head_Diff.jpg
+TEXTURE Mouth_Diff.jpg
+TEXTURE Shirt_Diff.jpg
+
+# default
+#MESH Victor_headGEO.obj Head_Diff.jpg eye.obj scream.obj
+
+#incompatible
+#MESH Victor_headGEO.obj Head_Diff.jpg smile.obj puff.obj
+
+# fear
+FACS Victor_headGEO.obj Head_Diff.jpg brows.obj brows_c.obj brows_l.obj lid.obj lid_t.obj lip_stretch.obj scream.obj
+
+# disgust
+#FACS Victor_headGEO.obj Head_Diff.jpg wrinkle.obj frown.obj lip_depressor.obj
+
+MESH Victor_leftEyeInner.obj Eyes_Diff.jpg
+MESH Victor_rightEyeInner.obj Eyes_Diff.jpg
+MESH Victor_lowerGums.obj Mouth_Diff.jpg
+MESH Victor_upperGums.obj Mouth_Diff.jpg
+MESH Victor_lowerTeeth.obj Mouth_Diff.jpg
+MESH Victor_upperTeeth.obj Mouth_Diff.jpg
+MESH Victor_tongue.obj Mouth_Diff.jpg
+MESH Victor_tearDuct.obj Eyes_Diff.jpg
+MESH Shirt.obj Shirt_Diff.jpg
