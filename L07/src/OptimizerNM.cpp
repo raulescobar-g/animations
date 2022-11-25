@@ -23,6 +23,19 @@ VectorXd OptimizerNM::optimize(const shared_ptr<Objective> objective, const Vect
 	int n = xInit.rows();
 	VectorXd x = xInit;
 	VectorXd g(n);
-	iter = 0;
+	MatrixXd H(n,n);
+	VectorXd dx(n);
+	double f;
+	
+
+	for (iter = 1; iter < iterMax; ++iter) {
+		double f = objective->evalObjective(x, g, H);
+		dx = -H.inverse() * g;
+		x += dx;
+
+		if (dx.norm() < tol) 
+			break;
+	}
+
 	return x;
 }
